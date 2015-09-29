@@ -1,0 +1,34 @@
+<h2>Listing documents</h2>
+
+<%= form_for @conn, document_path(@conn, :index), [method: :get, name: "search"], fn f -> %>
+  <%= text_input f, :q, placeholder: "Search..." %>
+<% end %>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Body</th>
+      <th>Title</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for document <- @documents do %>
+    <tr>
+      <td><%= document.body %></td>
+      <td><%= document.title %></td>
+
+      <td class="text-right">
+        <%= link "messages", to: document_message_path(@conn, :index, document), class: "btn btn-default btn-xs" %>
+        <%= link "Show", to: document_path(@conn, :show, document), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: document_path(@conn, :edit, document), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: document_path(@conn, :delete, document),
+                           method: :delete,
+                           class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New document", to: document_path(@conn, :new) %>

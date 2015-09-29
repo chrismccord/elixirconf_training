@@ -1,0 +1,30 @@
+<h2>Listing messages</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Document</th>
+      <th>Body</th>
+      <th>Username</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for message <- @messages do %>
+    <tr>
+      <td><%= message.document_id %></td>
+      <td><%= message.body %></td>
+      <td><%= message.username %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: document_message_path(@conn, :show, @document, message), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: document_message_path(@conn, :edit, @document, message), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: document_message_path(@conn, :delete, @document, message), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New message", to: document_message_path(@conn, :new, @document) %>

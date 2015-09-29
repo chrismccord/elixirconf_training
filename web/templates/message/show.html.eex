@@ -1,0 +1,19 @@
+<h2>Show message</h2>
+
+<ul>
+
+  <li>
+    <strong>Body:</strong>
+    <%= @message.body %>
+  </li>
+
+  <li>
+    <strong>Username:</strong>
+    <%= @message.username %>
+  </li>
+
+</ul>
+
+
+<%= link "Edit", to: document_message_path(@conn, :edit, @document, @message) %>
+<%= link "Back", to: document_message_path(@conn, :index, @document) %>
