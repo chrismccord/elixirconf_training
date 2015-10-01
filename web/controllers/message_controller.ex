@@ -27,6 +27,10 @@ defmodule Docs.MessageController do
 
     case Repo.insert(changeset) do
       {:ok, msg} ->
+        Docs.Endpoint.broadcast("documents:#{doc.id}", "new_message", %{
+          id: msg.id, body: msg.body
+        })
+
         conn
         |> put_flash(:info, "Message created successfully.")
         |> redirect(to: document_message_path(conn, :index, conn.assigns.document))
