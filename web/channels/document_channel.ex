@@ -73,4 +73,14 @@ defmodule Docs.DocumentChannel do
     }
     {:reply, :ok, socket}
   end
+
+  def handle_in("selection_change", params, socket) do
+    broadcast_from! socket, "selection_change", %{
+      user_id: params["user_id"],
+      username: params["username"],
+      color: params["color"],
+      end: params["end"]
+    }
+    {:reply, :ok, socket}
+  end
 end

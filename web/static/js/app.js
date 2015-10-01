@@ -38,6 +38,11 @@ let App = {
     let docChan = socket.channel("documents:" + docId)
     docChan.params["last_message_id"] = 0
     let editor = new Quill("#editor")
+    let multiCursor = editor.addModule("multi-cursor", {
+      timeout: 1000000000
+    })
+    let authorInput = $("#document_author")
+    authorInput.val("user-" + Math.floor(Math.random() * 1000))
     let editorContainer = $("#editor")
     let docForm = $("#doc-form")
     let msgContainer = $("#messages")
@@ -49,6 +54,31 @@ let App = {
       msgInput.val("")
     })
 
+    editor.on("selection-change", range => {
+      if(!range){ return }
+
+      multiCursor.setCursor(
+        authorInput.val(),
+        range.end,
+        authorInput.val(),
+        'rgb(255, 0, 255)'
+      )
+      docChan.push("selection_change", {
+        user_id: authorInput.val(),
+        end: range.end,
+        username: authorInput.val(),
+        color: 'rgb(255, 0, 255)'
+      })
+    })
+
+    docChan.on("selection_change", ({user_id, end, username, color}) => {
+      multiCursor.setCursor(
+        user_id,
+        end,
+        username,
+        color
+      )
+    })
 
     editorContainer.on("keydown", e => {
       if(!(e.which === 13 && e.metaKey)){ return }
