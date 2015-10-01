@@ -2,8 +2,22 @@ defmodule Docs.DocumentChannel do
   use Docs.Web, :channel
   alias Docs.Document
 
-  def join("documents:" <> doc_id, _params, socket) do
+  def join("documents:" <> doc_id, params, socket) do
+    send(self, {:after_join, params})
     {:ok, assign(socket, :doc_id, doc_id)}
+  end
+
+  def handle_info({:after_join, params}, socket) do
+    doc = Repo.get(Document, socket.assigns.doc_id)
+    messages = Repo.all(
+      from m in assoc(doc, :messages),
+        order_by: [desc: m.inserted_at],
+        select: %{id: m.id, body: m.body},
+        where: m.id > ^params["last_message_id"],
+        limit: 100
+    )
+    push socket, "messages", %{messages: messages}
+    {:noreply, socket}
   end
 
   def handle_in("text_change", %{"ops" => ops}, socket) do

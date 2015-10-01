@@ -34,6 +34,7 @@ let App = {
   init(){
     let docId = $("#doc-form").data("id")
     let docChan = socket.channel("documents:" + docId)
+    docChan.params["last_message_id"] = 0
     let editor = new Quill("#editor")
     let docForm = $("#doc-form")
     let msgContainer = $("#messages")
@@ -46,7 +47,7 @@ let App = {
     })
 
     docChan.on("new_message", msg => {
-      this.appendMessage(msg, msgContainer)
+      this.appendMessage(msg, msgContainer, docChan)
     })
 
     editor.on("text-change", (ops, source) => {
@@ -67,8 +68,14 @@ let App = {
       editor.updateContents(ops)
     })
 
+    docChan.on("messages", ({messages}) => {
+      messages.reverse().forEach( msg => {
+        this.appendMessage(msg, msgContainer, docChan)
+      })
+    })
+
     docChan.join()
-      .receive("ok", resp => console.log("joined!", resp) )
+      .receive("ok", () => { })
       .receive("error", reason => console.log("error!", reason) )
   },
 
@@ -79,7 +86,10 @@ let App = {
       .receive("ok", () => console.log("saved!") )
   },
 
-  appendMessage(msg, msgContainer){
+  appendMessage(msg, msgContainer, docChan){
+    if(docChan.params["last_message_id"] < msg.id){
+      docChan.params["last_message_id"] = msg.id
+    }
     msgContainer.append(`<br/>${msg.body}`)
     msgContainer.scrollTop(msgContainer.prop("scrollHeight"))
   }
