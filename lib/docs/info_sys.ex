@@ -14,12 +14,13 @@ defmodule Docs.InfoSys do
         expr: expr
       ]])
     end)
-    |> Enum.map(fn
+    |> Stream.map(fn
       {:ok, pid} -> {Process.monitor(pid), pid}
       _ -> nil
     end)
-    |> Enum.map(&receive_results(&1))
-    |> Enum.filter(&(&1))
+    |> Stream.filter(&(&1))
+    |> Stream.map(&receive_results(&1))
+    |> Stream.filter(&(&1))
     |> Enum.sort_by(fn result -> result.score end, &>/2)
   end
 
