@@ -1,26 +1,14 @@
 defmodule Docs.InfoSys.Cats do
-  use GenServer
 
-  def start_link(opts) do
-    GenServer.start_link(__MODULE__, opts)
-  end
-
-  def init(opts) do
-    send(self, :request)
+  def compute_img(opts) do
     :random.seed(:os.timestamp())
-    {:ok, opts}
-  end
+    :timer.sleep(10_000)
 
-  def handle_info(:request, opts) do
     if String.contains?(opts[:expr], "cat") do
-      img_url = random_cat()
-      send(opts[:client_pid], {:result, self, %{
-                                score: 100, img_url: img_url}})
+      %{score: 100, img_url: random_cat()}
     else
-      send(opts[:client_pid], {:noresult, self})
+      :noresult
     end
-
-    {:stop, :shutdown, opts}
   end
 
   defp random_cat() do
@@ -30,5 +18,4 @@ defmodule Docs.InfoSys.Cats do
       "http://www.hintsandthings.co.uk/garden/cats.h1.jpg"
     ])
   end
-
 end
