@@ -9,6 +9,7 @@ use Mix.Config
 config :docs, Docs.Endpoint,
   http: [port: 4000],
   debug_errors: true,
+  check_origin: false,
   code_reloader: true,
   cache_static_lookup: false,
   watchers: [node: ["node_modules/brunch/bin/brunch", "watch", "--stdin"]]
