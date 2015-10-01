@@ -74,9 +74,11 @@ let App = {
       })
     })
 
-    docChan.join()
-      .receive("ok", () => { })
-      .receive("error", reason => console.log("error!", reason) )
+    if(docId) {
+      docChan.join()
+        .receive("ok", () => { })
+        .receive("error", reason => console.log("error!", reason) )
+    }
   },
 
   save(docChan, editor){
