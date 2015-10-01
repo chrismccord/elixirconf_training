@@ -23,7 +23,9 @@
   </div>
 
   <div class="form-group">
-    <%= textarea f, :body, rows: 15, class: "form-control" %>
+    <div id="editor" class="form-control">
+      <%= raw @changeset.model.body %>
+    </div>
   </div>
 
   <div class="form-group">
