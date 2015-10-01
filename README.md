@@ -9,6 +9,7 @@ To start your new Phoenix application:
 $ mix ecto.create
 $ mix ecto.migrate
 $ mix run priv/repo/seeds.exs
+$ npm install
 ```
 3. Start Phoenix endpoint with `mix phoenix.server`
 
