@@ -1,6 +1,6 @@
 <h2>Listing documents</h2>
 
-<%= form_for @conn, document_path(@conn, :index), [method: :get, name: "search"], fn f -> %>
+<%= form_for @conn, document_path(@conn, :index), [method: :get, as: "search"], fn f -> %>
   <%= text_input f, :q, placeholder: "Search..." %>
 <% end %>
 <table class="table">
