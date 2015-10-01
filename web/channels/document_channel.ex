@@ -58,23 +58,13 @@ defmodule Docs.DocumentChannel do
     end
   end
 
-  defp app_id(), do: Application.get_env(:docs, :wolfram)[:app_id]
 
   def handle_in("compute_img", params, socket) do
-    input = URI.encode(params["expr"])
-    {:ok, {_, _, body}} = :httpc.request(String.to_char_list(
-      "http://api.wolframalpha.com/v2/query?appid=#{app_id()}&input=#{input}&format=image,plaintext"
-    ))
-
     img_url =
-      body
-      |> xpath(~x"/queryresult/pod[contains(@title, 'Result') or
-                                contains(@title, 'Results') or
-                                contains(@title, 'Plot')]
-                          /subpod/img/@src")
-      |> to_string()
-
-
+      case Docs.InfoSys.compute_img(params["expr"]) do
+        [%{img_url: img_url} | _] -> img_url
+        _ -> ""
+      end
 
     broadcast! socket, "insert_img", %{
       start: params["start"],

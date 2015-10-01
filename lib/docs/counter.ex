@@ -18,7 +18,12 @@ defmodule Docs.Counter do
   end
 
   def init(initial_value) do
+    :timer.send_interval(2000, :tick)
     {:ok, initial_value}
+  end
+
+  def handle_info(:tick, val) do
+    {:noreply, val - 1}
   end
 
   def handle_cast(:inc, val) do
