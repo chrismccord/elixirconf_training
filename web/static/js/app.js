@@ -19,3 +19,15 @@ import "deps/phoenix_html/web/static/js/phoenix_html"
 // paths "./socket" or full ones "web/static/js/socket".
 
 // import socket from "./socket"
+import {Socket} from "deps/phoenix/web/static/js/phoenix"
+let socket = new Socket("/socket", {params: {token: window.userToken}})
+
+socket.connect()
+socket.onOpen( () => console.log("connected!") )
+
+let docId = "123"
+let docChan = socket.channel("documents:" + docId)
+
+docChan.join()
+  .receive("ok", resp => console.log("joined!", resp) )
+  .receive("error", reason => console.log("error!", reason) )
