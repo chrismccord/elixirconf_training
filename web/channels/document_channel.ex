@@ -25,4 +25,21 @@ defmodule Docs.DocumentChannel do
         {:reply, {:error, %{reasons: changeset}}, socket}
     end
   end
+
+  def handle_in("new_message", params, socket) do
+    changeset =
+      Document
+      |> Repo.get(socket.assigns.doc_id)
+      |> Ecto.Model.build(:messages)
+      |> Message.changeset(params)
+
+    case Repo.insert(changeset) do
+      {:ok, msg} ->
+        broadcast! socket, "new_message", %{body: msg.body}
+        {:reply, :ok, socket}
+
+      {:error, changeset} ->
+        {:reply, {:error, %{reasons: changeset}}, socket}
+    end
+  end
 end
